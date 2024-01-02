@@ -61,6 +61,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// trigger sending the signed jwt to sp's
+	//
 	c.JSON(http.StatusOK, LoginResponse{AccessToken: signedToken})
 
 }

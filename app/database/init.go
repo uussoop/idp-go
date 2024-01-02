@@ -42,7 +42,8 @@ func InitDB() (err error) {
 	}
 
 	err = DB.AutoMigrate(
-	// add models to migrate
+		// add models to migrate
+		&User{},
 	)
 	log.Info("error migration ", err)
 
