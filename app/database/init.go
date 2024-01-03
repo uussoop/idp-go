@@ -44,6 +44,7 @@ func InitDB() (err error) {
 	err = DB.AutoMigrate(
 		// add models to migrate
 		&User{},
+		&ServiceProviders{},
 	)
 	log.Info("error migration ", err)
 

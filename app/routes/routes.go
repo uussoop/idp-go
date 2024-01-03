@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/uussoop/idp-go/middleware/auth"
+	"github.com/uussoop/idp-go/middleware/ratelimit"
 	"github.com/uussoop/idp-go/routes/api"
 )
 
@@ -20,7 +20,9 @@ func InitRouter() *gin.Engine {
 	}
 
 	r := gin.New()
-	r.Use(auth.CheckTokenMiddleware())
+	// r.Use(auth.CheckTokenMiddleware())
+	r.Use(ratelimit.RateLimit("auth", 10, 60))
+
 	r.POST("/register", api.RegisterHandler)
 	r.POST("/nonce/", api.UserNonceHandler)
 	r.POST("/login", api.LoginHandler)

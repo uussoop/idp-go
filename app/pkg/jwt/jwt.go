@@ -1,22 +1,22 @@
 package jwt
 
 import (
-	"encoding/base64"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/uussoop/idp-go/pkg/utils"
 )
 
-var secret = []byte(base64.StdEncoding.EncodeToString(utils.RandomBytes(32)))
+// var secret = []byte(base64.StdEncoding.EncodeToString(utils.RandomBytes(32)))
+
+var PrivateKey = utils.GeneratePairKey()
 
 func CreateToken(Username string, t time.Duration) (string, error) {
 
 	// Verify username and password
 
-	token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.New(jwt.SigningMethodRS512)
 	claims := token.Claims.(jwt.MapClaims)
 
 	// Set claims
@@ -24,7 +24,7 @@ func CreateToken(Username string, t time.Duration) (string, error) {
 	claims["exp"] = time.Now().Add(t).Unix()
 
 	// Create token
-	tokenString, err := token.SignedString(secret)
+	tokenString, err := token.SignedString(PrivateKey)
 
 	return tokenString, err
 }
@@ -32,7 +32,7 @@ func ValidateToken(tokenString string) (bool, error) {
 
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
+		return PrivateKey.Public, nil
 	})
 	if err != nil {
 		return false, err
@@ -41,7 +41,7 @@ func ValidateToken(tokenString string) (bool, error) {
 	// Validate claims
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		_ = claims["username"].(string)
-		log.Println(token.SignedString(secret))
+		// log.Println(token.SignedString(secret))
 		return true, nil
 
 	} else {
@@ -51,7 +51,7 @@ func ValidateToken(tokenString string) (bool, error) {
 }
 func UsernameFromToken(T *string) (string, error) {
 	token, err := jwt.Parse(*T, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
+		return PrivateKey.Public, nil
 	})
 	if err != nil {
 		return "", err
