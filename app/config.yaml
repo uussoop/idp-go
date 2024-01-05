@@ -4,4 +4,5 @@ providers:
   name:
   description:
   url:
+  ip:
   Token:
