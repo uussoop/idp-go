@@ -1,6 +1,8 @@
 package jobs
 
 import (
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
 	"github.com/uussoop/idp-go/pkg/jwt"
@@ -22,5 +24,13 @@ func RefreshKeys() {
 		return
 	}
 	//push to service providers
-	providers.PushKeyToProviders(pub, providerslist)
+	failed, err := providers.PushKeyToProviders(pub, providerslist)
+	retryqouta := 20
+	for i := 1; i <= retryqouta; i++ {
+		if err == nil && len(failed) > 0 {
+			time.Sleep(5 * time.Minute)
+			failed, err = providers.PushKeyToProviders(pub, failed)
+
+		}
+	}
 }
