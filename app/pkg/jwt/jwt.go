@@ -1,16 +1,16 @@
 package jwt
 
 import (
+	"crypto/rsa"
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/uussoop/idp-go/pkg/utils"
 )
 
 // var secret = []byte(base64.StdEncoding.EncodeToString(utils.RandomBytes(32)))
 
-var PrivateKey = utils.GeneratePairKey()
+var PrivateKey *rsa.PrivateKey
 
 func CreateToken(Username string, t time.Duration) (string, error) {
 
