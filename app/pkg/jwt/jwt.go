@@ -29,10 +29,10 @@ func CreateToken(Username string, t time.Duration) (string, error) {
 	return tokenString, err
 }
 func ValidateToken(tokenString string) (bool, error) {
-
+	pub := PrivateKey.PublicKey
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return PrivateKey.Public, nil
+		return &pub, nil
 	})
 	if err != nil {
 		return false, err
