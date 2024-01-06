@@ -26,7 +26,7 @@ func InitRouter() *gin.Engine {
 	r.POST("/register", api.RegisterHandler)
 	r.POST("/nonce/", api.UserNonceHandler)
 	r.POST("/login", api.LoginHandler)
-	r.GET("/pull", api.LoginHandler)
+	r.GET("/pull", api.PullHandler)
 
 	// r.POST("/verify", api.VerifyHandler)
 
