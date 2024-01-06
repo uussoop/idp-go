@@ -10,7 +10,7 @@ import (
 func InitPairKeysAndProviders() {
 	jwt.PrivateKey = utils.GeneratePairKey()
 
-	c, err := providers.ReadProviderConfig("config.yaml")
+	c, err := providers.ReadProviderConfig("./config/config.yaml")
 	if err != nil {
 		logrus.Error(err)
 		return

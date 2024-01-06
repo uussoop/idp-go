@@ -84,3 +84,32 @@ Authenticates a user and returns a JWT token.
 400 Error if invalid request
 
 500 Error if JWT token generation fails
+
+
+Here is the markdown documentation for the provided Go code:
+
+## Pull
+
+```
+GET /pull
+```
+
+Pulls the public key for JWT verification.
+
+#### Request Headers
+
+- **Authorization**: JWT token 
+
+#### Response 
+
+- 200 OK with public key in body
+- 401 Unauthorized if missing or invalid JWT token
+- 500 Internal Server Error if error generating public key
+
+#### Example
+
+```json
+{
+  "public_key": "048a9d...341fe2" 
+}
+```
