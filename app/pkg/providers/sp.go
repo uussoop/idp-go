@@ -2,6 +2,7 @@ package providers
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -10,7 +11,7 @@ import (
 )
 
 type pubkeyBody struct {
-	PublickKey []byte `json:"public_key"`
+	PublickKey string `json:"public_key"`
 }
 
 func PushKeyToProviders(
@@ -18,7 +19,8 @@ func PushKeyToProviders(
 	providers []database.ServiceProviders,
 ) (failedProviders []database.ServiceProviders, err error) {
 	var pubkeyBody pubkeyBody
-	pubkeyBody.PublickKey = pubKey
+	pstring := base64.StdEncoding.EncodeToString(pubKey)
+	pubkeyBody.PublickKey = pstring
 	pubKey, err = json.Marshal(pubkeyBody)
 	if err != nil {
 		return nil, err

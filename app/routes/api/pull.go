@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"net/http"
 	"strings"
 
@@ -13,7 +14,7 @@ import (
 )
 
 type PullResponse struct {
-	PublickKey []byte `json:"public_key"`
+	PublickKey string `json:"public_key"`
 }
 
 func PullHandler(c *gin.Context) {
@@ -38,6 +39,7 @@ func PullHandler(c *gin.Context) {
 			return
 		}
 		pub, err := utils.Rs512PubToByte(&(jwt.PrivateKey.PublicKey))
+		pstring := base64.StdEncoding.EncodeToString(pub)
 		if err != nil {
 			logrus.Error(err)
 			c.JSON(
@@ -47,7 +49,7 @@ func PullHandler(c *gin.Context) {
 			c.Abort()
 			return
 		}
-		c.JSON(http.StatusOK, PullResponse{PublickKey: pub})
+		c.JSON(http.StatusOK, PullResponse{PublickKey: pstring})
 
 	}
 
