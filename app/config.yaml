@@ -1,8 +1,8 @@
 
 providers:
-  id:
-  name:
-  description:
-  url:
-  ip:
-  Token:
+  - id:
+    name:
+    description:
+    url:
+    ip:
+    Token:
