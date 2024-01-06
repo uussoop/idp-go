@@ -34,6 +34,8 @@ func PullHandler(c *gin.Context) {
 		token = strings.Replace(token, "Bearer ", "", 1)
 		err := database.GetByIpAndToken(ip, token)
 		if err != nil {
+			logrus.Error(err)
+
 			c.JSON(
 				http.StatusUnauthorized,
 				customerrors.Unauthorized,
