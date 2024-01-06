@@ -24,8 +24,8 @@ func GetAllServiceProviders() (s []ServiceProviders, err error) {
 	return s, nil
 }
 func GetByIpAndToken(ip, token string) (err error) {
-	var sp *ServiceProviders
-	err = DB.Where(ServiceProviders{Ip: token, Token: token}).First(&sp).Error
+	var sp ServiceProviders
+	err = DB.Where(ServiceProviders{Ip: ip, Token: token}).First(&sp).Error
 	if err != nil {
 		return err
 	}
