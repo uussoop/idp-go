@@ -20,6 +20,9 @@ type PullResponse struct {
 func PullHandler(c *gin.Context) {
 	token := c.GetHeader("Authorization")
 	ip := c.ClientIP()
+	logrus.Info(token)
+	logrus.Info(ip)
+
 	if token == "" {
 		c.JSON(
 			http.StatusUnauthorized,
