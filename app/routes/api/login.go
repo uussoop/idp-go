@@ -83,17 +83,18 @@ func Authenticate(
 	sig := hexutil.MustDecode(sigHex)
 	// https://github.com/ethereum/go-ethereum/blob/master/internal/ethapi/api.go#L516
 	// check here why I am subtracting 27 from the last byte
-	logrus.Warn(sig)
+	logrus.Warn("sig : ", sig)
 	sig[crypto.RecoveryIDOffset] -= 27
 	msg := accounts.TextHash([]byte(nonce))
-	logrus.Warn(msg)
+	logrus.Warn("msg : ", msg)
 
 	recovered, err := crypto.SigToPub(msg, sig)
-	logrus.Warn(recovered)
+	logrus.Warn("recovered : ", recovered)
 	if err != nil {
 		return *user, &customerrors.SigToPub
 	}
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
+	logrus.Warn("recovered address", recoveredAddr.Hex())
 
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &customerrors.AuthFailure
