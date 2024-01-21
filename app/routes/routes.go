@@ -11,6 +11,7 @@ func InitRouter() *gin.Engine {
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
+	config.AllowOrigins = []string{"*"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
 	config.AllowHeaders = []string{
 		"Origin",
