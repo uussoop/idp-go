@@ -19,7 +19,7 @@ func GetUserByAddress(address string) (user *User, err error) {
 		return nil, err
 	}
 
-	if user.ID == 0 || !user.Verified {
+	if user.ID == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 	return user, nil
