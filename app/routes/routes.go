@@ -27,7 +27,7 @@ func InitRouter() *gin.Engine {
 	r.Use(ratelimit.RateLimit("auth", 10, 60))
 
 	r.POST("/register", api.RegisterHandler)
-	r.POST("/nonce/", api.UserNonceHandler)
+	r.POST("/nonce", api.UserNonceHandler)
 	r.POST("/login", api.LoginHandler)
 	r.GET("/pull", api.PullHandler)
 
