@@ -17,10 +17,13 @@ func InitRouter() *gin.Engine {
 		"Content-Length",
 		"Content-Type",
 		"Authorization",
+		"X-Requested-With",
 	}
 
 	r := gin.New()
 	// r.Use(auth.CheckTokenMiddleware())
+	r.Use(cors.New(config))
+
 	r.Use(ratelimit.RateLimit("auth", 10, 60))
 
 	r.POST("/register", api.RegisterHandler)
