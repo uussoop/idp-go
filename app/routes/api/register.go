@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
 	"github.com/uussoop/idp-go/pkg/customerrors"
 	"github.com/uussoop/idp-go/pkg/utils"
@@ -50,6 +51,7 @@ func RegisterHandler(c *gin.Context) {
 		Nonce:    nonce,
 	}
 	if err := u.Create(); err != nil {
+		logrus.Warn(err)
 		c.JSON(http.StatusInternalServerError, customerrors.Usercreation)
 		return
 	}
