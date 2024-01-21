@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
 	"github.com/uussoop/idp-go/pkg/customerrors"
 	"github.com/uussoop/idp-go/pkg/jwt"
@@ -66,7 +67,11 @@ func LoginHandler(c *gin.Context) {
 
 }
 
-func Authenticate(address string, nonce string, sigHex string) (database.User, *customerrors.Customerror) {
+func Authenticate(
+	address string,
+	nonce string,
+	sigHex string,
+) (database.User, *customerrors.Customerror) {
 	user, err := database.GetUserByAddress(address)
 	if err != nil {
 		return *user, &customerrors.UserNotFound
@@ -78,9 +83,13 @@ func Authenticate(address string, nonce string, sigHex string) (database.User, *
 	sig := hexutil.MustDecode(sigHex)
 	// https://github.com/ethereum/go-ethereum/blob/master/internal/ethapi/api.go#L516
 	// check here why I am subtracting 27 from the last byte
+	logrus.Warn(sig)
 	sig[crypto.RecoveryIDOffset] -= 27
 	msg := accounts.TextHash([]byte(nonce))
+	logrus.Warn(msg)
+
 	recovered, err := crypto.SigToPub(msg, sig)
+	logrus.Warn(recovered)
 	if err != nil {
 		return *user, &customerrors.SigToPub
 	}
