@@ -56,7 +56,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	signedToken, jwterr := jwt.CreateToken(user.Address, time.Minute*15)
+	signedToken, jwterr := jwt.CreateToken(user.Address, time.Hour*168)
 	if jwterr != nil {
 		c.JSON(http.StatusBadRequest, customerrors.CreateCustomError(500, "failed in making jwt"))
 		return
