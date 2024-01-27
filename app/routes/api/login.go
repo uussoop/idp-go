@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -53,7 +54,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	address := strings.ToLower(p.Address)
-	user, err := Authenticate(address, p.Nonce, p.Sig)
+	user, balance, err := Authenticate(address, p.Nonce, p.Sig)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, *err)
 		return
@@ -66,7 +67,10 @@ func LoginHandler(c *gin.Context) {
 	}
 	// trigger sending the signed jwt to sp's
 	//
-	c.JSON(http.StatusOK, LoginResponse{AccessToken: signedToken})
+	c.JSON(
+		http.StatusOK,
+		LoginResponse{AccessToken: signedToken, Balance: *balance},
+	)
 
 }
 
@@ -74,13 +78,13 @@ func Authenticate(
 	address string,
 	nonce string,
 	sigHex string,
-) (database.User, *customerrors.Customerror) {
+) (database.User, *string, *customerrors.Customerror) {
 	user, err := database.GetUserByAddress(address)
 	if err != nil {
-		return *user, &customerrors.UserNotFound
+		return *user, nil, &customerrors.UserNotFound
 	}
 	if user.Nonce != nonce {
-		return *user, &customerrors.NoncCheck
+		return *user, nil, &customerrors.NoncCheck
 	}
 
 	sig := hexutil.MustDecode(sigHex)
@@ -94,28 +98,29 @@ func Authenticate(
 	recovered, err := crypto.SigToPub(msg, sig)
 	logrus.Warn("recovered : ", recovered)
 	if err != nil {
-		return *user, &customerrors.SigToPub
+		return *user, nil, &customerrors.SigToPub
 	}
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
 	logrus.Warn("recovered address", recoveredAddr.Hex())
 
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
-		return *user, &customerrors.AuthFailure
+		return *user, nil, &customerrors.AuthFailure
 	}
 	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
 	if err != nil {
-		return *user, &customerrors.SigToPub
+		return *user, nil, &customerrors.SigToPub
 	}
 	if balance <= blocks.BalanceLimit {
-		return *user, &customerrors.BalanceLimit
+		return *user, nil, &customerrors.BalanceLimit
 	}
+	stringbalance := fmt.Sprintf("%f", balance)
 	// update the nonce here so that the signature cannot be resused
 	nonce, err = utils.GetNonce()
 	if err != nil {
-		return *user, &customerrors.NonceGeneration
+		return *user, nil, &customerrors.NonceGeneration
 	}
 	user.Nonce = nonce
 	user.Update()
 
-	return *user, nil
+	return *user, &stringbalance, nil
 }
