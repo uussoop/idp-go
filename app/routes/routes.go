@@ -22,7 +22,7 @@ func InitRouter() *gin.Engine {
 
 	r := gin.New()
 	// r.Use(auth.CheckTokenMiddleware())
-	// r.Use(cors.New(config))
+	r.Use(cors.New(config))
 
 	r.Use(ratelimit.RateLimit("auth", 10, 60))
 
