@@ -19,8 +19,15 @@ var (
 	UserNotFound    Customerror = Customerror{Status: 1005, Message: "user not found"}
 	SigMissing      Customerror = Customerror{Status: 1006, Message: "signature not found"}
 	SigToPub        Customerror = Customerror{Status: 1007, Message: "signature failure"}
-	AuthFailure     Customerror = Customerror{Status: 1008, Message: "authentication error address and recoveraddress dont match"}
-	Unauthorized    Customerror = Customerror{Status: 1009, Message: "unauthorized access"}
+	AuthFailure     Customerror = Customerror{
+		Status:  1008,
+		Message: "authentication error address and recoveraddress dont match",
+	}
+	Unauthorized Customerror = Customerror{Status: 1009, Message: "unauthorized access"}
+	BalanceLimit Customerror = Customerror{
+		Status:  1010,
+		Message: "your wallet balance is not enough",
+	}
 )
 
 func CreateCustomError(status int, message string) Customerror {

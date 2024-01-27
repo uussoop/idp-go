@@ -6,11 +6,13 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
+	"github.com/uussoop/idp-go/pkg/blocks"
 	"github.com/uussoop/idp-go/pkg/customerrors"
 	"github.com/uussoop/idp-go/pkg/jwt"
 	"github.com/uussoop/idp-go/pkg/utils"
@@ -23,6 +25,7 @@ type LoginRequest struct {
 }
 type LoginResponse struct {
 	AccessToken string `json:"token"`
+	Balance     string `json:"balance"`
 }
 
 func (s LoginRequest) Validate() *customerrors.Customerror {
@@ -99,7 +102,13 @@ func Authenticate(
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &customerrors.AuthFailure
 	}
-
+	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
+	if err != nil {
+		return *user, &customerrors.SigToPub
+	}
+	if balance <= blocks.BalanceLimit {
+		return *user, &customerrors.BalanceLimit
+	}
 	// update the nonce here so that the signature cannot be resused
 	nonce, err = utils.GetNonce()
 	if err != nil {
