@@ -1,16 +1,19 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
+	"github.com/uussoop/idp-go/pkg/blocks"
 	"github.com/uussoop/idp-go/pkg/customerrors"
 	"github.com/uussoop/idp-go/pkg/jwt"
 	"github.com/uussoop/idp-go/pkg/utils"
@@ -103,14 +106,14 @@ func Authenticate(
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &stringbalance, &customerrors.AuthFailure
 	}
-	// balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
-	// if err != nil {
-	// 	return *user, &stringbalance, &customerrors.SigToPub
-	// }
-	// if balance <= blocks.BalanceLimit {
-	// 	return *user, &stringbalance, &customerrors.BalanceLimit
-	// }
-	// stringbalance = fmt.Sprintf("%f", balance)
+	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
+	if err != nil {
+		return *user, &stringbalance, &customerrors.SigToPub
+	}
+	if balance <= blocks.BalanceLimit {
+		return *user, &stringbalance, &customerrors.BalanceLimit
+	}
+	stringbalance = fmt.Sprintf("%f", balance)
 	// update the nonce here so that the signature cannot be resused
 	nonce, err = utils.GetNonce()
 	if err != nil {
