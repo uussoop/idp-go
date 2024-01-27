@@ -65,8 +65,7 @@ func LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, customerrors.CreateCustomError(500, "failed in making jwt"))
 		return
 	}
-	// trigger sending the signed jwt to sp's
-	//
+
 	c.JSON(
 		http.StatusOK,
 		LoginResponse{AccessToken: signedToken, Balance: *balance},
@@ -79,12 +78,13 @@ func Authenticate(
 	nonce string,
 	sigHex string,
 ) (database.User, *string, *customerrors.Customerror) {
+	stringbalance := ""
 	user, err := database.GetUserByAddress(address)
 	if err != nil {
-		return *user, nil, &customerrors.UserNotFound
+		return *user, &stringbalance, &customerrors.UserNotFound
 	}
 	if user.Nonce != nonce {
-		return *user, nil, &customerrors.NoncCheck
+		return *user, &stringbalance, &customerrors.NoncCheck
 	}
 
 	sig := hexutil.MustDecode(sigHex)
@@ -98,26 +98,26 @@ func Authenticate(
 	recovered, err := crypto.SigToPub(msg, sig)
 	logrus.Warn("recovered : ", recovered)
 	if err != nil {
-		return *user, nil, &customerrors.SigToPub
+		return *user, &stringbalance, &customerrors.SigToPub
 	}
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
 	logrus.Warn("recovered address", recoveredAddr.Hex())
 
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
-		return *user, nil, &customerrors.AuthFailure
+		return *user, &stringbalance, &customerrors.AuthFailure
 	}
 	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
 	if err != nil {
-		return *user, nil, &customerrors.SigToPub
+		return *user, &stringbalance, &customerrors.SigToPub
 	}
 	if balance <= blocks.BalanceLimit {
-		return *user, nil, &customerrors.BalanceLimit
+		return *user, &stringbalance, &customerrors.BalanceLimit
 	}
-	stringbalance := fmt.Sprintf("%f", balance)
+	stringbalance = fmt.Sprintf("%f", balance)
 	// update the nonce here so that the signature cannot be resused
 	nonce, err = utils.GetNonce()
 	if err != nil {
-		return *user, nil, &customerrors.NonceGeneration
+		return *user, &stringbalance, &customerrors.NonceGeneration
 	}
 	user.Nonce = nonce
 	user.Update()
