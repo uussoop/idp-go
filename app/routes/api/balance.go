@@ -15,7 +15,8 @@ type BalanceResponse struct {
 
 func GetBalanceHandler(c *gin.Context) {
 	tokenfull := c.GetHeader("Authorization")
-	token := strings.Split(tokenfull, " ")[1]
+	token := strings.Replace(tokenfull, "Bearer ", "", 1)
+
 	username, ok, err := jwt.ValidateToken(token)
 
 	response := BalanceResponse{}

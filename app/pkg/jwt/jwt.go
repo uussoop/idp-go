@@ -28,6 +28,7 @@ func CreateToken(Username string, t time.Duration) (string, error) {
 
 	return tokenString, err
 }
+
 func ValidateToken(tokenString string) (string, bool, error) {
 	pub := PrivateKey.PublicKey
 	// Parse the token
