@@ -28,7 +28,7 @@ func VerifyHandler(c *gin.Context) {
 		return
 	}
 
-	ok, err := jwt.ValidateToken(tokenString)
+	_, ok, err := jwt.ValidateToken(tokenString)
 	if err != nil || !ok {
 		c.JSON(http.StatusUnauthorized, customerrors.Unauthorized)
 		return

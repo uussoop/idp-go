@@ -5,6 +5,7 @@ import "github.com/uussoop/idp-go/pkg/services"
 func main() {
 	services.InitSqlDB()
 	services.InitPairKeysAndProviders()
+	services.InitBlocks()
 	services.InitCron()
 	services.InitGin()
 

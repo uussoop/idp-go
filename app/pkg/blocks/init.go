@@ -12,6 +12,8 @@ import (
 
 var BscContract *Contract
 var Client *ethclient.Client
+var Url string
+
 var BalanceLimit float64
 
 type Ethereum struct {

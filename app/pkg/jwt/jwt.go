@@ -28,24 +28,24 @@ func CreateToken(Username string, t time.Duration) (string, error) {
 
 	return tokenString, err
 }
-func ValidateToken(tokenString string) (bool, error) {
+func ValidateToken(tokenString string) (string, bool, error) {
 	pub := PrivateKey.PublicKey
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return &pub, nil
 	})
 	if err != nil {
-		return false, err
+		return "", false, err
 	}
 
 	// Validate claims
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		_ = claims["username"].(string)
+		username := claims["username"].(string)
 		// log.Println(token.SignedString(secret))
-		return true, nil
+		return username, true, nil
 
 	} else {
-		return false, errors.New("invalid token")
+		return "", false, errors.New("invalid token")
 	}
 
 }

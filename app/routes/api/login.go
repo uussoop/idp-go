@@ -103,7 +103,9 @@ func Authenticate(
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &stringbalance, &customerrors.AuthFailure
 	}
+	// blocks.BscContract.Client, err = ethclient.Dial(blocks.Url)
 	// balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
+	// blocks.BscContract.Client.Close()
 	// if err != nil {
 	// 	return *user, &stringbalance, &customerrors.SigToPub
 	// }

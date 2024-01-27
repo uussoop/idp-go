@@ -22,13 +22,14 @@ func InitRouter() *gin.Engine {
 
 	r := gin.New()
 	// r.Use(auth.CheckTokenMiddleware())
-	r.Use(cors.New(config))
+	// r.Use(cors.New(config))
 
 	r.Use(ratelimit.RateLimit("auth", 10, 60))
 
 	r.POST("/register", api.RegisterHandler)
 	r.POST("/nonce", api.UserNonceHandler)
 	r.POST("/login", api.LoginHandler)
+	r.POST("/balance", api.GetBalanceHandler)
 	r.GET("/pull", api.PullHandler)
 
 	// r.POST("/verify", api.VerifyHandler)
