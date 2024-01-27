@@ -75,7 +75,7 @@ func Authenticate(
 	nonce string,
 	sigHex string,
 ) (database.User, *string, *customerrors.Customerror) {
-	stringbalance := ""
+	stringbalance := "1"
 	user, err := database.GetUserByAddress(address)
 	if err != nil {
 		return *user, &stringbalance, &customerrors.UserNotFound

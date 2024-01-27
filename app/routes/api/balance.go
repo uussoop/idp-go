@@ -24,7 +24,7 @@ func GetBalanceHandler(c *gin.Context) {
 		return
 	}
 	response.Address = username
-	response.Balance = ""
+	response.Balance = "1"
 	if ok {
 		c.JSON(http.StatusOK, response)
 
