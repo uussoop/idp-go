@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"os"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/uussoop/idp-go/middleware/ratelimit"
@@ -31,6 +33,9 @@ func InitRouter() *gin.Engine {
 	r.POST("/login", api.LoginHandler)
 	r.POST("/balance", api.GetBalanceHandler)
 	r.GET("/pull", api.PullHandler)
+	if os.Getenv("DEBUG") == "TRUE" {
+		r.POST("/testbalance", api.TestHandler)
+	}
 
 	// r.POST("/verify", api.VerifyHandler)
 

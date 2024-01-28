@@ -1,12 +1,18 @@
 package main
 
-import "github.com/uussoop/idp-go/pkg/services"
+import (
+	"os"
+
+	"github.com/uussoop/idp-go/pkg/services"
+)
 
 func main() {
 	services.InitSqlDB()
-	services.InitPairKeysAndProviders()
+	if os.Getenv("DEBUG") != "TRUE" {
+		services.InitPairKeysAndProviders()
+		services.InitCron()
+	}
 	services.InitBlocks()
-	services.InitCron()
 	services.InitGin()
 
 }

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/uussoop/idp-go/pkg/blocks"
 )
 
@@ -24,7 +25,7 @@ func InitBlocks() {
 	}
 	var err error
 	blocks.BalanceLimit, err = strconv.ParseFloat(balanceLimit, 64)
-	// blocks.Client, err = ethclient.Dial(clientUrl)
+	blocks.Client, err = ethclient.Dial(clientUrl)
 	blocks.Url = clientUrl
 
 	contractdecimalint, err := strconv.ParseInt(contractDecimal, 10, 64)

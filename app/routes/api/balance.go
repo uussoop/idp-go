@@ -1,10 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
+	"github.com/uussoop/idp-go/pkg/blocks"
 	"github.com/uussoop/idp-go/pkg/jwt"
 )
 
@@ -24,7 +27,14 @@ func GetBalanceHandler(c *gin.Context) {
 		return
 	}
 	response.Address = username
-	response.Balance = "1"
+	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(username))
+	if err != nil {
+		response.Balance = "0"
+
+	} else {
+
+		response.Balance = fmt.Sprintf("%f", balance)
+	}
 	if ok {
 		c.JSON(http.StatusOK, response)
 
