@@ -114,7 +114,7 @@ func Authenticate(
 		if err != nil {
 			return *user, &stringbalance, &customerrors.SigToPub
 		}
-		if balance <= blocks.BalanceLimit {
+		if balance < blocks.BalanceLimit {
 			return *user, &stringbalance, &customerrors.BalanceLimit
 		}
 		stringbalance = fmt.Sprintf("%f", balance)
