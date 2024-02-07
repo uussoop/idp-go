@@ -57,13 +57,16 @@ func LoginHandler(c *gin.Context) {
 	address := strings.ToLower(p.Address)
 	user, balance, err := Authenticate(address, p.Nonce, p.Sig)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, *err)
+		c.JSON(http.StatusUnauthorized, *err)
 		return
 	}
 
 	signedToken, jwterr := jwt.CreateToken(user.Address, time.Hour*168)
 	if jwterr != nil {
-		c.JSON(http.StatusBadRequest, customerrors.CreateCustomError(500, "failed in making jwt"))
+		c.JSON(
+			http.StatusInternalServerError,
+			customerrors.CreateCustomError(500, "failed in making jwt"),
+		)
 		return
 	}
 
@@ -107,7 +110,7 @@ func Authenticate(
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &stringbalance, &customerrors.AuthFailure
 	}
-	if os.Getenv("DEBUG") == "FALSE" {
+	if os.Getenv("DEBUG") == "FALSE" || !database.GetWhitelistByAddress(user.Address) {
 
 		balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
 		blocks.BscContract.Client.Close()

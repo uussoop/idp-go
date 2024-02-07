@@ -6,3 +6,6 @@ providers:
     url:
     ip:
     token:
+whitelist:
+  - id:
+    address:

@@ -25,3 +25,24 @@ func GetUserByAddress(address string) (user *User, err error) {
 	return user, nil
 
 }
+func GetWhitelistByAddress(address string) bool {
+	var user *UserWhitelist
+	err := DB.Where(UserWhitelist{Address: address}).First(&user).Error
+	if err != nil {
+		return false
+	}
+
+	if user.ID == 0 {
+		return false
+	}
+	return true
+
+}
+func (u *UserWhitelist) Create() (err error) {
+	err = DB.Create(&u).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

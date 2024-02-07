@@ -15,6 +15,14 @@ func InitPairKeysAndProviders() {
 		logrus.Error(err)
 		return
 	}
+	for _, u := range c.Whitelist {
+		err = u.Create()
+		if err != nil {
+			logrus.Error(err)
+
+		}
+	}
+
 	for _, v := range c.Providers {
 		err = v.Create()
 		if err != nil {

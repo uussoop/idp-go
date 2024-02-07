@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	Whitelist []database.UserWhitelist    `yaml:"whitelist"`
 	Providers []database.ServiceProviders `yaml:"providers"`
 }
 
