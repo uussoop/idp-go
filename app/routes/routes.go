@@ -20,6 +20,8 @@ func InitRouter() *gin.Engine {
 		"Content-Type",
 		"Authorization",
 		"X-Requested-With",
+		"baggagebaggage",
+		"sentry-trace",
 	}
 
 	r := gin.New()
