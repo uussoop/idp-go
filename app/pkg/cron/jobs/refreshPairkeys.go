@@ -1,6 +1,7 @@
 package jobs
 
 import (
+	"os"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -11,8 +12,14 @@ import (
 )
 
 func RefreshKeys() {
+	privkeypath := os.Getenv("PRIVATE_KEY_PATH")
 
 	jwt.PrivateKey = utils.GeneratePairKey()
+	prbyte, err := utils.Rs512PrivToByte(jwt.PrivateKey)
+	err = os.WriteFile(privkeypath, prbyte, 0644)
+	if err != nil {
+		logrus.Error(err)
+	}
 	providerslist, err := database.GetAllServiceProviders()
 	if err != nil {
 		logrus.Error(err)
