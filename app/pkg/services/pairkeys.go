@@ -10,6 +10,7 @@ import (
 )
 
 func InitPairKeysAndProviders() {
+	logrus.Info("initing pair key and providers")
 	privkeypath := os.Getenv("PRIVATE_KEY_PATH")
 	if priv, err := os.ReadFile(privkeypath); len(priv) != 0 && err == nil {
 
@@ -28,6 +29,9 @@ func InitPairKeysAndProviders() {
 	} else {
 		jwt.PrivateKey = utils.GeneratePairKey()
 		prbyte, err := utils.Rs512PrivToByte(jwt.PrivateKey)
+		if err != nil {
+			panic(err)
+		}
 		err = os.WriteFile(privkeypath, prbyte, 0644)
 		if err != nil {
 			panic("error in creating and saving private keys ")

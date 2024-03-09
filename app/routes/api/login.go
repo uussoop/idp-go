@@ -7,12 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/database"
 	"github.com/uussoop/idp-go/pkg/blocks"
 	"github.com/uussoop/idp-go/pkg/customerrors"
@@ -50,10 +46,11 @@ func LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, customerrors.BadBodyRequest)
 		return
 	}
-	if err := p.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, *err)
-		return
-	}
+
+	// if err := p.Validate(); err != nil {
+	// 	c.JSON(http.StatusBadRequest, *err)
+	// 	return
+	// }
 	address := strings.ToLower(p.Address)
 	user, balance, err := Authenticate(address, p.Nonce, p.Sig)
 	if err != nil {
@@ -62,6 +59,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	signedToken, jwterr := jwt.CreateToken(user.Address, time.Hour*168)
+
 	if jwterr != nil {
 		c.JSON(
 			http.StatusInternalServerError,
@@ -91,25 +89,25 @@ func Authenticate(
 		return *user, &stringbalance, &customerrors.NoncCheck
 	}
 
-	sig := hexutil.MustDecode(sigHex)
-	// https://github.com/ethereum/go-ethereum/blob/master/internal/ethapi/api.go#L516
-	// check here why I am subtracting 27 from the last byte
-	logrus.Warn("sig : ", sig)
-	sig[crypto.RecoveryIDOffset] -= 27
-	msg := accounts.TextHash([]byte(nonce))
-	logrus.Warn("msg : ", msg)
+	// sig := hexutil.MustDecode(sigHex)
+	// // https://github.com/ethereum/go-ethereum/blob/master/internal/ethapi/api.go#L516
+	// // check here why I am subtracting 27 from the last byte
+	// logrus.Warn("sig : ", sig)
+	// sig[crypto.RecoveryIDOffset] -= 27
+	// msg := accounts.TextHash([]byte(nonce))
+	// logrus.Warn("msg : ", msg)
 
-	recovered, err := crypto.SigToPub(msg, sig)
-	logrus.Warn("recovered : ", recovered)
-	if err != nil {
-		return *user, &stringbalance, &customerrors.SigToPub
-	}
-	recoveredAddr := crypto.PubkeyToAddress(*recovered)
-	logrus.Warn("recovered address", recoveredAddr.Hex())
+	// recovered, err := crypto.SigToPub(msg, sig)
+	// logrus.Warn("recovered : ", recovered)
+	// if err != nil {
+	// 	return *user, &stringbalance, &customerrors.SigToPub
+	// }
+	// recoveredAddr := crypto.PubkeyToAddress(*recovered)
+	// logrus.Warn("recovered address", recoveredAddr.Hex())
 
-	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
-		return *user, &stringbalance, &customerrors.AuthFailure
-	}
+	// if user.Address != strings.ToLower(recoveredAddr.Hex()) {
+	// 	return *user, &stringbalance, &customerrors.AuthFailure
+	// }
 	if os.Getenv("DEBUG") == "FALSE" && !database.GetWhitelistByAddress(user.Address) {
 
 		balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
@@ -117,6 +115,7 @@ func Authenticate(
 		if err != nil {
 			return *user, &stringbalance, &customerrors.SigToPub
 		}
+
 		if balance < blocks.BalanceLimit {
 			return *user, &stringbalance, &customerrors.BalanceLimit
 		}

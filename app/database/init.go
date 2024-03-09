@@ -30,7 +30,7 @@ func InitDB() (err error) {
 			fmt.Println(err)
 		}
 
-		DB, err = openDB("/app/database/sqlite.db", gCnf)
+		DB, err = openDB("./sqlite.db", gCnf)
 
 	} else {
 

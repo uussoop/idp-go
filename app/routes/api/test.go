@@ -6,6 +6,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/uussoop/idp-go/pkg/blocks"
 )
 
@@ -24,7 +25,9 @@ func TestHandler(c *gin.Context) {
 		return
 	}
 	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(request.Address))
-
+	if balance > blocks.BalanceLimit {
+		logrus.Warn(balance, blocks.BalanceLimit)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

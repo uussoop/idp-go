@@ -88,7 +88,7 @@ func Rs512PrivToByte(priv *rsa.PrivateKey) ([]byte, error) {
 		return nil, err
 	}
 	privPEM := pem.EncodeToMemory(&pem.Block{
-		Type:  "RSA PUBLIC KEY",
+		Type:  "RSA PRIVATE KEY",
 		Bytes: privBytes,
 	})
 	return privPEM, nil

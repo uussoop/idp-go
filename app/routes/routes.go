@@ -2,6 +2,7 @@ package routes
 
 import (
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,7 @@ func InitRouter() *gin.Engine {
 	// r.Use(auth.CheckTokenMiddleware())
 	r.Use(cors.New(config))
 
-	r.Use(ratelimit.RateLimit("auth", 10, 60))
+	r.Use(ratelimit.RateLimit("auth", 10, 60*time.Second))
 
 	r.POST("/register", api.RegisterHandler)
 	r.POST("/nonce", api.UserNonceHandler)
