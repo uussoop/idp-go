@@ -1,6 +1,8 @@
 package database
 
 import (
+	"errors"
+
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -45,6 +47,9 @@ func GetWhitelistByAddress(address string) bool {
 
 }
 func (u *UserWhitelist) Create() (err error) {
+	if u.Address == "" {
+		return errors.New("address is empty")
+	}
 	err = DB.Create(&u).Error
 	if err != nil {
 		return err
