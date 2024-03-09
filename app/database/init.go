@@ -45,6 +45,7 @@ func InitDB() (err error) {
 		// add models to migrate
 		&User{},
 		&ServiceProviders{},
+		&UserWhitelist{},
 	)
 	log.Info("error migration ", err)
 
