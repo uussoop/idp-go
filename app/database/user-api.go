@@ -1,6 +1,9 @@
 package database
 
-import "gorm.io/gorm"
+import (
+	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+)
 
 func (u *User) Create() (err error) {
 	err = DB.Create(&u).Error
@@ -28,6 +31,9 @@ func GetUserByAddress(address string) (user *User, err error) {
 func GetWhitelistByAddress(address string) bool {
 	var user *UserWhitelist
 	err := DB.Where(UserWhitelist{Address: address}).First(&user).Error
+	logrus.Info("get whitelist err: ", err)
+	logrus.Info("get whitelist usr: ", user)
+
 	if err != nil {
 		return false
 	}
