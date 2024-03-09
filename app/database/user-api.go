@@ -31,8 +31,8 @@ func GetUserByAddress(address string) (user *User, err error) {
 func GetWhitelistByAddress(address string) bool {
 	var user *UserWhitelist
 	err := DB.Where(UserWhitelist{Address: address}).First(&user).Error
-	logrus.Info("get whitelist err: ", err)
-	logrus.Info("get whitelist usr: ", user)
+	logrus.Warn("get whitelist err: ", err)
+	logrus.Warn("get whitelist usr: ", user)
 
 	if err != nil {
 		return false

@@ -110,7 +110,7 @@ func Authenticate(
 	if user.Address != strings.ToLower(recoveredAddr.Hex()) {
 		return *user, &stringbalance, &customerrors.AuthFailure
 	}
-	if os.Getenv("DEBUG") == "FALSE" || !database.GetWhitelistByAddress(user.Address) {
+	if os.Getenv("DEBUG") == "FALSE" && !database.GetWhitelistByAddress(user.Address) {
 
 		balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(user.Address))
 		blocks.BscContract.Client.Close()
