@@ -29,11 +29,10 @@ func InitRouter() *gin.Engine {
 	// r.Use(auth.CheckTokenMiddleware())
 	r.Use(cors.New(config))
 
-	r.Use(ratelimit.RateLimit("auth", 10, 60*time.Second))
-
 	r.POST("/register", api.RegisterHandler)
 	r.POST("/nonce", api.UserNonceHandler)
 	r.POST("/login", api.LoginHandler)
+	r.Use(ratelimit.RateLimit("auth", 30, 60*time.Second))
 	r.POST("/balance", api.GetBalanceHandler)
 	r.GET("/pull", api.PullHandler)
 	if os.Getenv("DEBUG") == "TRUE" {
