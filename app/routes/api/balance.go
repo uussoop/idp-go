@@ -29,14 +29,14 @@ func GetBalanceHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
+	response.Address = username
 	getCache := cache.GetCache()
 	if balance, ok := getCache.Get(fmt.Sprintf("balance_get%s", username)); ok {
 
-		response.Balance = fmt.Sprintf("%f", balance)
+		response.Balance = fmt.Sprintf("%s", balance.(string))
 		c.JSON(http.StatusOK, response)
 		return
 	}
-	response.Address = username
 	balance, err := blocks.BscContract.GetTokenBalance(common.HexToAddress(username))
 	if err != nil {
 		response.Balance = "0"
