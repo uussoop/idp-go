@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 	"time"
@@ -26,7 +27,8 @@ func GetBalanceHandler(c *gin.Context) {
 
 	response := BalanceResponse{}
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		logrus.Warn(err.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "token is corrupt"})
 		return
 	}
 	response.Address = username
