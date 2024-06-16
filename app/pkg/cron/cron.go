@@ -16,13 +16,14 @@ func init() {
 func initJobs() {
 	if CronJob != nil {
 		// every 7 days get models 0 0 0 ? * 7/7 *
-		CronJob.AddFunc("0 0 0 * * */7", jobs.RefreshKeys)
+		CronJob.AddFunc("0 0 0 28 */2 *", jobs.RefreshKeys)
 
 	}
 }
 
 func Start() {
 	if CronJob != nil {
+
 		CronJob.Start()
 	}
 }

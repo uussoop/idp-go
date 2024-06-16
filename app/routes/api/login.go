@@ -62,7 +62,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	signedToken, jwterr := jwt.CreateToken(user.Address, time.Hour*168)
+	signedToken, jwterr := jwt.CreateToken(user.Address, time.Hour*720)
 
 	if jwterr != nil {
 		c.JSON(

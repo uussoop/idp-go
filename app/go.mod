@@ -3,14 +3,14 @@ module github.com/uussoop/idp-go
 go 1.20
 
 require (
-	github.com/ethereum/go-ethereum v1.13.8
+	github.com/ethereum/go-ethereum v1.13.15
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.9.3
-	golang.org/x/crypto v0.17.0
+	golang.org/x/crypto v0.21.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/sqlite v1.5.4
@@ -33,7 +33,7 @@ require (
 	github.com/ethereum/c-kzg-4844 v0.4.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/go-ole/go-ole v1.2.5 // indirect
+	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.15.5 // indirect
@@ -61,9 +61,9 @@ require (
 	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.15.0 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
